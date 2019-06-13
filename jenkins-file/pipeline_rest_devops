@@ -1,10 +1,10 @@
 node {
 
-   //stage('Clone Repository') {
+   stage('Clone Repository') {
         // Get some code from a GitHub repository
-     //   git 'https://github.com/djvasquezn/rest-devops.git'
+		git 'https://github.com/djvasquezn/rest-devops.git'
     
-   //}
+   }
    stage('Build Maven Image') {
         docker.build("maven-build")
    }
