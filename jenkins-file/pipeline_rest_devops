@@ -25,7 +25,7 @@ node {
          //Remove maven-build-container if it exists
         //sh " docker rm -f java-deploy-container"
        
-        sh "docker run --name java-deploy-container -d -p 8081:8081 rest-devops"
+        sh "docker run -p 8081:8081 rest-devops"
    }
 
 }
