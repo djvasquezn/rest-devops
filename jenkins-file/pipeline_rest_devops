@@ -1,29 +1,29 @@
-pipeline {
-    agent any
-    tools {
-        maven 'maven-local'
-    }
-    stages {
-        stage('01 - Test'){
-            steps {
-                sh 'mvn clean test'
-                cleanWs()
-            }
-        }
-        //stage('02 - Package') {
-            //steps {
-                //sh 'mvn package'
-            //}
-        //}
-        stage('03 - Deploy') {
-            //environment {
-              //  TOMCAT_CREDS = credentials('tomcat-credentials')
-                //TOMCAT_URL = credentials('tomcat-url')
-            //}
-            steps {
-				sh 'mvn clean install'
-                //sh 'curl -s --upload-file ${WORKSPACE}/target/rest-devops-0.0.1-SNAPSHOT "http://${TOMCAT_CREDS_USR}:${TOMCAT_CREDS_PSW}@${TOMCAT_URL}:8080/manager/text/deploy?path=/argentum-web&update=true"'
-            }
-        }
-    }
+node {
+
+   //stage('Clone Repository') {
+        // Get some code from a GitHub repository
+     //   git 'https://github.com/djvasquezn/rest-devops.git'
+    
+   //}
+   stage('Build Maven Image') {
+        docker.build("maven-build")
+   }
+   
+   stage('Run Maven Container') {
+       
+        //Remove maven-build-container if it exists
+        sh " docker rm -f maven-build-container"
+        
+        //Run maven image
+        sh "docker run --rm --name maven-build-container maven-build"
+   }
+   
+   stage('Deploy Spring Boot Application') {
+        
+         //Remove maven-build-container if it exists
+        sh " docker rm -f java-deploy-container"
+       
+        sh "docker run --name java-deploy-container --volumes-from maven-build-container -d -p 8081:8081 rest-devops"
+   }
+
 }
