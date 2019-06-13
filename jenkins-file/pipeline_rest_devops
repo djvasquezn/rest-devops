@@ -1,31 +1,27 @@
-node {
-
-   stage('Clone Repository') {
-        // Get some code from a GitHub repository
-		git 'https://github.com/djvasquezn/rest-devops.git'
-    
-   }
-   stage('Build Maven Image') {
-        docker.build("maven-build")
-   }
-   
-   stage('Run Maven Container') {
-       
-        //Remove maven-build-container if it exists
-        //if [  "$(docker ps -q -f name=maven-build-container)" ]; then
-                //sh "docker rm -f maven-build-container"
-        //fi
-        
-        //Run maven image
-        sh " docker run --rm --name maven-build-container maven-build"
-   }
-   
-   stage('Deploy Spring Boot Application') {
-        
-         //Remove maven-build-container if it exists
-        sh " docker rm -f java-deploy-container"
-       
-        sh "docker run --name java-deploy-container --volumes-from maven-build-container -d -p 8081:8081 rest-devops"
-   }
-
+pipeline {
+    agent {docker 'maven:3.5-alpine'}
+    tools {
+        maven 'MVN'
+    }
+    stages {
+        stage('01 - Test'){
+            steps {
+                //git url: 'https://github.com/kidh0/argentum-web'
+                sh 'mvn clean test'
+                cleanWs()
+            }
+        }
+        stage('02 - Package') {
+            steps {
+                //git url: 'https://github.com/kidh0/argentum-web'
+                sh 'mvn package'
+            }
+        }
+        stage('03 - Deploy') {
+            steps {
+                //sh 'curl -s --upload-file ${WORKSPACE}/target/argentum-web.war "http://${TOMCAT_CREDS_USR}:${TOMCAT_CREDS_PSW}@${TOMCAT_URL}:8080/manager/text/deploy?path=/argentum-web&update=true"'
+				sh 'mvn install'
+            }
+        }
+    }
 }
