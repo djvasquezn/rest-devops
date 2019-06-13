@@ -1,7 +1,7 @@
 pipeline {
     agent {docker 'maven:3.5-alpine'}
     tools {
-        maven 'MVN'
+        maven 'maven-local'
     }
     stages {
         stage('01 - Test'){
