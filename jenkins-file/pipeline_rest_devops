@@ -16,12 +16,13 @@ pipeline {
             //}
         //}
         stage('03 - Deploy') {
-            environment {
-                TOMCAT_CREDS = credentials('tomcat-credentials')
-                TOMCAT_URL = credentials('tomcat-url')
-            }
+            //environment {
+              //  TOMCAT_CREDS = credentials('tomcat-credentials')
+                //TOMCAT_URL = credentials('tomcat-url')
+            //}
             steps {
-                sh 'curl -s --upload-file ${WORKSPACE}/target/rest-devops-0.0.1-SNAPSHOT "http://${TOMCAT_CREDS_USR}:${TOMCAT_CREDS_PSW}@${TOMCAT_URL}:8080/manager/text/deploy?path=/argentum-web&update=true"'
+				sh 'mvn clean install'
+                //sh 'curl -s --upload-file ${WORKSPACE}/target/rest-devops-0.0.1-SNAPSHOT "http://${TOMCAT_CREDS_USR}:${TOMCAT_CREDS_PSW}@${TOMCAT_URL}:8080/manager/text/deploy?path=/argentum-web&update=true"'
             }
         }
     }
