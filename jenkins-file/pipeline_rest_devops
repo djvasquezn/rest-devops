@@ -1,29 +1,29 @@
 pipeline {
-	agent {
-        docker {
-            image 'maven:3-alpine'
-            args '-v /root/.m2:/root/.m2'
-        }
+    agent any
+    tools {
+        maven 'MVN'
     }
     stages {
-        stage('Build') {
+        stage('01 - Test'){
             steps {
-                sh 'mvn -B -DskipTests clean package'
+                git url: 'https://github.com/kidh0/argentum-web'
+                sh 'mvn clean test'
+                cleanWs()
             }
         }
-        stage('Test') { 
+        stage('02 - Package') {
             steps {
-                sh 'mvn test' 
-            }
-            post {
-                always {
-                    junit 'target/surefire-reports/*.xml' 
-                }
+                git url: 'https://github.com/kidh0/argentum-web'
+                sh 'mvn package'
             }
         }
-		stage('Deliver') { 
+        stage('03 - Deploy') {
+            environment {
+                TOMCAT_CREDS = credentials('tomcat-credentials')
+                TOMCAT_URL = credentials('tomcat-url')
+            }
             steps {
-                sh './jenkins/scripts/deliver.sh' 
+                sh 'curl -s --upload-file ${WORKSPACE}/target/argentum-web.war "http://${TOMCAT_CREDS_USR}:${TOMCAT_CREDS_PSW}@${TOMCAT_URL}:8080/manager/text/deploy?path=/argentum-web&update=true"'
             }
         }
     }
