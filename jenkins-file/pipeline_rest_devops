@@ -10,11 +10,11 @@ pipeline {
                 cleanWs()
             }
         }
-        stage('02 - Package') {
-            steps {
-                sh 'mvn package'
-            }
-        }
+        //stage('02 - Package') {
+            //steps {
+                //sh 'mvn package'
+            //}
+        //}
         stage('03 - Deploy') {
             environment {
                 TOMCAT_CREDS = credentials('tomcat-credentials')
