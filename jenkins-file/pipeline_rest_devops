@@ -1,31 +1,34 @@
 node {
-
-   stage('Clone Repository') {
-        // Get some code from a GitHub repository
-		git 'https://github.com/djvasquezn/rest-devops.git'
-    
-   }
-   stage('Build Maven Image') {
-        docker.build("maven-build")
-   }
-   
-   stage('Run Maven Container') {
-       
-        //Remove maven-build-container if it exists
-        //if [  "$(docker ps -q -f name=maven-build-container)" ]; then
-                //sh "docker rm -f maven-build-container"
-        //fi
-        
-        //Run maven image
-        sh " docker run --rm --name maven-build-container maven-build"
-   }
-   
-   stage('Deploy Spring Boot Application') {
-        
-         //Remove maven-build-container if it exists
-        //sh " docker rm -f java-deploy-container"
-       
-        sh "docker run -p 8081:8081 rest-devops"
-   }
-
+ 
+    withMaven(maven:'maven') {
+ 
+        stage('Checkout') {
+            git url: 'https://github.com/djvasquezn/rest-devops.git'
+        }
+ 
+        stage('Build') {
+            sh 'mvn clean install'
+ 
+            def pom = readMavenPom file:'pom.xml'
+            print pom.version
+            env.version = pom.version
+        }
+ 
+        stage('Image') {
+            dir ('account-service') {
+                def app = docker.build "localhost:5000/account-service:${env.version}"
+                app.push()
+            }
+        }
+ 
+        stage ('Run') {
+            docker.image("localhost:5000/account-service:${env.version}").run('-p 2222:2222 -h account --name account --link discovery')
+        }
+ 
+        stage ('Final') {
+            build job: 'customer-service-pipeline', wait: false
+        }      
+ 
+    }
+ 
 }
