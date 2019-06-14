@@ -1,0 +1,30 @@
+services:
+  contenedor1:
+    image: devops-image:1.0
+    container_name: rest-devops-docker
+    build: .
+    command: sh server1.sh
+    volumes:
+      - .:/code
+    ports:
+      - "8082:8082"
+
+  contenedor2:
+    image: devops-image:1.0
+    container_name: rest-devops-docker2
+    build: .
+    command: sh server2.sh
+    volumes:
+      - .:/code
+    ports:
+      - "8083:8083"
+  proxy:
+      image: nginx-image:1.0
+      build:
+        context:  ./balanceo
+        dockerfile: Dockerfile
+      ports:
+        - "8000:8000"
+      links:
+          - contenedor1:contenedor1
+          - contenedor2:contenedor2
