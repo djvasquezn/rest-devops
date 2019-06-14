@@ -7,7 +7,13 @@ node {
         stage('Build') {
 			//sh 'docker ps -f name=rest-devops-docker -q | xargs --no-run-if-empty docker container stop'
 			//sh 'docker container ls -a -fname=rest-devops-docker -q | xargs -r docker container rm'
-			docker rm -f rest-devops-docker
+			sh """
+			  docker ps -a \
+				| awk '{ print \$1,\$2 }' \
+				| grep rest-devops-docker \
+				| awk '{print \$1 }' \
+				| xargs -I {} docker rm -f {}
+			  """
             sh 'mvn clean install'
          }
  
