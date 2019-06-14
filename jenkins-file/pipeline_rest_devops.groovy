@@ -10,7 +10,8 @@ node {
  
         stage('Image') {
             dir ('devops') {
-                def app = docker.build "localhost:5000/devops:${env.version}"
+                //def app = docker.build "localhost:5000/devops:${env.version}"
+				def app = docker.build "-f Dockerfile -t rest.devops-docker"
                 app.push()
             }
         }
