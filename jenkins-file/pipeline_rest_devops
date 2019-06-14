@@ -1,9 +1,9 @@
 pipeline {
- 
+	agent {docker 'maven:3.5-alpine'}
     tools {
         maven 'maven-local'
     }
- 
+    stages {
         stage('Checkout') {
             git url: 'https://github.com/djvasquezn/rest-devops.git'
         }
@@ -27,10 +27,5 @@ pipeline {
             docker.image("localhost:5000/account-service:${env.version}").run('-p 2222:2222 -h account --name account --link discovery')
         }
  
-        stage ('Final') {
-            build job: 'customer-service-pipeline', wait: false
-        }      
- 
-    
- 
+    }
 }
