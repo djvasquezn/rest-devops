@@ -1,4 +1,4 @@
-node {
+pipeline {
  
     tools {
         maven 'maven-local'
