@@ -12,12 +12,12 @@ node {
             //dir ('devops') {
                 //def app = docker.build "localhost:5000/devops:${env.version}"
 				def app = docker.build("rest-devops-docker")
-                app.push()
+                //app.push()
             //}
         }
  
         stage ('Run') {
-            docker.image("localhost:5000/devops:${env.version}").run('-p 8081:8081 -h devops --name devops')
+            docker.image("rest-devops-docker").run('-p 8081:8081 -h devops --name devops')
         }
  
 }
