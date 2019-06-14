@@ -1,6 +1,6 @@
 node {
  
-    withMaven(maven:'maven-local') {
+    
  
        stage('Checkout') {
             git url: 'https://github.com/piomin/sample-spring-microservices.git'
@@ -30,6 +30,6 @@ node {
             build job: 'account-service-pipeline', wait: false
         }      
  
-    }
+    
  
 }
