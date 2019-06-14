@@ -9,11 +9,11 @@ node {
          }
  
         stage('Image') {
-            dir ('devops') {
+            //dir ('devops') {
                 //def app = docker.build "localhost:5000/devops:${env.version}"
-				def app = docker.build("rest.devops-docker")
+				def app = docker.build("rest-devops-docker")
                 app.push()
-            }
+            //}
         }
  
         stage ('Run') {
