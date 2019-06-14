@@ -5,7 +5,8 @@ node {
         }
  
         stage('Build') {
-			sh "kill 8081"
+			sh 'docker ps -f name=rest-devops-docker -q | xargs --no-run-if-empty docker container stop'
+			sh 'docker container ls -a -fname=rest-devops-docker -q | xargs -r docker container rm'
             sh 'mvn clean install'
          }
  
