@@ -5,7 +5,7 @@ node {
         }
  
         stage('Build') {
-			sh "docker rm $(docker stop $(docker ps -a -q --filter ancestor=rest-devops-docker--format="{{.ID}}"))"
+			sh "kill 8081"
             sh 'mvn clean install'
          }
  
