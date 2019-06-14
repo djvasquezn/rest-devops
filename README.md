@@ -25,7 +25,7 @@ Prueba práctica  para aplicación al departamento de sistemas banco pichincha
 - Nginx en el balanceo de carga (2 nodos)
 
 # Herramientas de integración 
-- CI/DI : Jenkins (http://35.193.14.80:8080/) Usuario: admin, password: admin
+- CI/DI : Jenkins (http://35.193.14.80:8080/) Usuario: admin, password: admin, configurado para disparase cada 5 minutos
 
 
 
