@@ -1,29 +1,22 @@
 node {
  
        stage('Checkout') {
-            git url: 'https://github.com/piomin/sample-spring-microservices.git'
+            git url: 'https://github.com/djvasquezn/rest-devops.git'
         }
- 
  
         stage('Build') {
             sh 'mvn clean install'
          }
  
         stage('Image') {
-            dir ('discovery-service') {
-                def app = docker.build "localhost:5000/discovery-service:${env.version}"
+            dir ('devops') {
+                def app = docker.build "localhost:5000/devops:${env.version}"
                 app.push()
             }
         }
  
         stage ('Run') {
-            docker.image("localhost:5000/discovery-service:${env.version}").run('-p 8761:8761 -h discovery --name discovery')
+            docker.image("localhost:5000/devops:${env.version}").run('-p 8081:8081 -h devops --name devops')
         }
- 
-        stage ('Final') {
-            build job: 'account-service-pipeline', wait: false
-        }      
- 
-    
  
 }
