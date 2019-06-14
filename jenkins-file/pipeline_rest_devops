@@ -1,6 +1,8 @@
 node {
  
-    withMaven(maven:'maven') {
+    tools {
+        maven 'maven-local'
+    }
  
         stage('Checkout') {
             git url: 'https://github.com/djvasquezn/rest-devops.git'
@@ -29,6 +31,6 @@ node {
             build job: 'customer-service-pipeline', wait: false
         }      
  
-    }
+    
  
 }
