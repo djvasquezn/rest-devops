@@ -5,11 +5,11 @@ node {
         }
  
         stage('Build') {
+			sh "docker rm $(docker stop $(docker ps -a -q --filter ancestor=rest-devops-docker--format="{{.ID}}"))"
             sh 'mvn clean install'
          }
  
         stage('Image') {
-			sh "docker rm -f java-deploy-container"
 			def app = docker.build("rest-devops-docker")
         }
  
