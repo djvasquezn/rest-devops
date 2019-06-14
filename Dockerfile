@@ -1,6 +1,4 @@
-FROM maven:3.5-jdk-8
-RUN mkdir -p /deploy/application
-VOLUME ["/deploy/application"]
-WORKDIR /deploy/application
-ADD . .
-ENTRYPOINT ["mvn","clean","package","-Dmaven.test.skip=true"]
+FROM openjdk:8
+ADD target/rest-devops-0.0.1-SNAPSHOT.jar app.jar
+EXPOSE 8081
+ENTRYPOINT ["java", "-jar","app.jar"]
